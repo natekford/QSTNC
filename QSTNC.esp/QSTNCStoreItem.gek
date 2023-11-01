@@ -40,7 +40,7 @@ begin function { objectId, amount }
 			continue
 		endif
 		
-		printf "MovedItems73.txt" "Moved " + $(amount) + " " + $(objectId) + " to " + container.GetName
+		printf "QSTNCMovedItems.txt" "Moved " + $(amount) + " " + $(objectId) + " to " + container.GetName
 		
 		player.RemoveItemTarget objectId container amount
 		SetFunctionValue amount
