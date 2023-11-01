@@ -1,0 +1,20 @@
+scn GetDistinctFormIdsInContainer
+
+ref container
+
+begin function { container }
+	; for some reason a stack of items can have 2 ref ids despite being the same stack/form id?
+	; so I can't simply do 'foreach item <- player' because it will deposit 2x
+	; this can be solved by actually implementing the favorites system though
+	; (which i did, but i guess i'll leave this here anyways)
+	; (turns out it still was useful to prevent extra items being sent to the input box)
+
+	; 0 = all items, 1s = no non playable, no quest items, no equipped
+	array_var items = container.GetAllItemRefs 0 1 1 1
+	; don't bother with keys, 46 = key
+	array_var filtered = ar_Filter items ({array_var iFilter} => (*iFilter).GetObjectType != 46);
+	array_var ids = ar_MapTo filtered ({array_var iMap} => (*iMap).GetBaseObject);
+	array_var distinctIds = ar_Unique ids
+
+	SetFunctionValue distinctIds
+end

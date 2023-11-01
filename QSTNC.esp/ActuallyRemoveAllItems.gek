@@ -1,0 +1,11 @@
+scn ActuallyRemoveAllItems
+
+begin function {}
+	player.RemoveAllItems
+
+	ref item
+	foreach item <- player
+		ref objectId = item.GetBaseObject
+		player.RemoveItem objectId 1000000
+	loop
+end

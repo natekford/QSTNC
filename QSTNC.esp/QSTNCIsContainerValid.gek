@@ -1,0 +1,31 @@
+scn QSTNCIsContainerValid
+
+ref container
+
+begin function { container }
+	; todo: figure out how to use MCM and put these in config options
+	int maxAllowedDistHorizontal = 10000
+	int maxAllowedDistVertical = 250
+
+	; disabled container = impossible for player to access
+	if eval (container.GetDisabled)
+		SetFunctionValue -1
+	; respawning containers = bad to store items in
+	elseif eval (container.GetContainerRespawns)
+		SetFunctionValue -2
+	; not sure if I should include this one, scripted containers probably should be ignored?
+	elseif eval (container.IsPersistent)
+		SetFunctionValue -3
+	; ownership
+	elseif eval (container.GetOwner != 0)
+		SetFunctionValue -4
+	; too far horizontally
+	elseif eval (maxAllowedDistHorizontal < player.GetDistance2D container)
+		SetFunctionValue -5
+	; too far vertically
+	elseif eval (maxAllowedDistVertical < Abs (player.GetPos Z - container.GetPos Z))
+		SetFunctionValue -6
+	else
+		SetFunctionValue 1
+	endif
+end

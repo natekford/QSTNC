@@ -1,0 +1,6 @@
+scn QSTNCStoreInventory
+
+begin function {}
+	array_var ids = call GetDistinctFormIdsInContainer player
+	ar_ForEach ids ({array_var iForEach} => call QSTNCStoreItem *iForEach 1000000);
+end

@@ -1,0 +1,11 @@
+scn QSTNCFavoritesInput
+
+begin function {}
+	QSTNCFavoritesInputREF.Activate player
+	
+	; add the event handler AFTER the activate call
+	; otherwise if the user is in a container menu and invokes this method
+	; the handler will fire when that original menu closes and not the input menu
+	; 1 = add, 1008 = container menus
+	SetOnMenuCloseEventHandler QSTNCFavoritesInputClosed 1 1008
+end

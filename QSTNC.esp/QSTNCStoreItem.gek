@@ -1,0 +1,49 @@
+scn QSTNCStoreItem
+
+ref objectId
+int amount
+
+begin function { objectId, amount }
+	; cap the amount of items to move at the amount the player has
+	int playerCount = player.GetItemCount objectId
+	int favoriteCount = QSTNCFavoritesREF.GetItemCount objectId
+	let playerCount -= favoriteCount
+
+	if eval (amount > playerCount)
+		let amount := playerCount
+	endif
+
+	; no point in trying to move nothing
+	if eval (amount < 1)
+		SetFunctionValue -1
+		return
+	endif
+
+	; 27 = containers
+	array_var containers = GetRefs 27
+	int containersSize = ar_size containers
+	int iContainer = 0
+	
+	while (iContainer < containersSize)
+		ref container = containers[iContainer]
+
+		; container doesn't have the item, skip it
+		int containerCount = container.GetItemCount objectId
+		if eval (containerCount == 0)
+			let iContainer += 1
+			continue
+		endif
+
+		int isValidContainer = call QSTNCIsContainerValid container
+		if eval (isValidContainer < 0)
+			let iContainer += 1
+			continue
+		endif
+		
+		printf "MovedItems73.txt" "Moved " + $(amount) + " " + $(objectId) + " to " + container.GetName
+		
+		player.RemoveItemTarget objectId container amount
+		SetFunctionValue amount
+		break
+	loop
+end

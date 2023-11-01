@@ -1,0 +1,27 @@
+scn QSTNCFavoritesInputClosed
+
+int menuId
+
+begin function { menuId }
+	; 0 = remove, 1008 = container menus
+	SetOnMenuCloseEventHandler QSTNCFavoritesInputClosed 0 1008
+
+	array_var ids = call GetDistinctFormIdsInContainer QSTNCFavoritesInputREF
+	if eval (0 == ar_Size ids)
+		return
+	endif
+
+	; copy all of the items to the main storage box
+	ar_ForEach ids (begin function {array_var iForEach} =>
+		ref objectId = *iForEach
+		int quantity = QSTNCFavoritesInputREF.GetItemCount objectId
+		QSTNCFavoritesREF.AddItemAlt objectId quantity
+	end);
+
+	; put the input back into the player's inventory after copying it
+	; 1 = keep ownership info, 1 = hide messages
+	QSTNCFavoritesInputREF.RemoveAllItems player 1 1
+	
+	; since favorites are save based we should autosave to keep them around
+	Autosave
+end
